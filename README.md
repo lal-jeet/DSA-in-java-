@@ -1,7 +1,7 @@
 # 📘 Java DSA Programs
 This GitHub repo contains all my Data Structures and Algorithms (DSA) programs written in Java. I’ve created this to practice and share DSA solutions that are helpful for coding interviews, exams, and skill improvement.
 
-# 🔍 What You’ll Find Here:
+# 🔍 What You’ll Find in my repo:
 Programs on Arrays, Strings, Linked Lists, Stacks, and Queues
 
 Tree and Graph problems
@@ -12,7 +12,7 @@ Recursion, Backtracking, and Dynamic Programming
 
 Pattern printing, Bitwise tricks, and more
 
-# 📌 Highlights:
+# 📌 Highlights about my repo:
 Easy to read and understand Java code
 
 Organized folders for different topics
@@ -22,15 +22,3 @@ Helpful comments and logic explained
 Works with any Java version (Java 8 and above)
 
 Great for students and beginners in coding
-
-# 🚀 How to Run:
-Download or clone the repo:
-
-bash
-Copy
-Edit
-git clone https://github.com/your-username/java-dsa-programs.git
-
-
-# 🙋‍♂️ Want to Help?
-If you know a better solution or want to add new programs, feel free to contribute!
