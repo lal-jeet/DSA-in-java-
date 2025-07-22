@@ -1,0 +1,14 @@
+class Solution {
+    public int missingNumber(int[] arr) {
+        // code here
+        Set<Integer> set = new HashSet<>();
+        for(int ele:arr)
+        set.add(ele);
+        
+        for(int i=1;i<10_00_00;i++)
+        if(!set.contains(i))
+        return i;
+        
+        return -1;
+    }
+}
