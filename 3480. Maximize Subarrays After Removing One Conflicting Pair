@@ -1,0 +1,149 @@
+class Solution {
+    public long maxSubarrays(int n, int[][] conflictingPairs) {
+        // 1. Create a "conflict list" for each number.
+        // It's like a dossier on every bully who quarrels with him. 📁
+        List<Integer>[] conflicts = new List[n + 1];
+        for (int i = 0; i <= n; i++) {
+            conflicts[i] = new ArrayList<>();
+        }
+
+/*
+Imagine that you want to build an apartment building.
+
+    List<Integer>[] conflicts = new List[n + 1]; is how to build a 
+frame house with n + 1 apartments. The apartments are 
+still empty, but the frame is already there.
+    new ArrayList<>() is how to build one separate apartment.
+    The for loop is how to go through each apartment in the 
+house and decorate it with furniture (create an ArrayList<Integer>).
+*/
+
+        // 2. Fill in the "conflict list".
+        // For each quarreling couple (a, b), add a to the b file. 
+// (We assume that b is greater than a for convenience).
+        for (int[] pair : conflictingPairs) {
+            int a = Math.min(pair[0], pair[1]);
+            int b = Math.max(pair[0], pair[1]);
+            conflicts[b].add(a);
+        }
+/*
+maxLeft (which is calculated using conflicts[b]) serves as the 
+boundary to the left of which you cannot start a new “table” 
+(in a row) so that it ends at the current right position.
+
+It's as if we have an invisible wall that cannot be crossed when 
+forming a table. And this wall is determined by the leftmost 
+“quarreling" guest.
+
+Example:
+
+Suppose we have the following situation:
+
+    right = 7 (we are considering finishing the table on guest 7)
+conflicts[7] = [2, 5] ( guest 7 quarrels with guests 2 and 5)
+
+In this case:
+
+    maxLeft = 5 (the rightmost of the quarreling guests, that is, 
+ closest to 7)
+
+This means that we cannot start the table to the left of guest 5 
+if we want it to end at guest 7. We can start the table with guest 5,
+ with guest 6, or only with guest 7.
+
+    [5, 6, 7] - acceptable table
+    [6, 7] - acceptable table
+    7 - acceptable table
+    [4, 5, 6, 7] - invalid table (because 5 quarrels with 7)
+[1, 2, 3, 4, 5, 6, 7] - invalid table (because 2 and 5 are 
+fighting with 7)
+
+Thus, maxLeft effectively defines the boundary to which we 
+can “move back” the beginning of the table to avoid conflicts.
+*/
+        
+        // 3. gain[i] stores how many new subarrays we will get if we delete a pair of conflicting numbers where maxLeft=i
+        long[] gain = new long[n + 1];
+        // totalValid stores the total number of subarrays that do not conflict
+        long totalValid = 0;
+        // maxLeft is the leftmost index in the segment that cannot be used.
+        // secondMax is the second leftmost index in the segment that cannot be used.
+        int maxLeft = 0, secondMax = 0;  
+        
+        // 4. We go by the numbers from 1 to n (right is the right border of the row).
+        for (int right = 1; right <= n; right++) {
+// 5. Let's see who is fighting with the current number (right). 
+// We use this cycle to find the most “problematic” guest, 
+// who most of all “blocks” our ability to create a long table.
+
+// don't forget that ♦️maxLeft♦️ is the maximum limit.
+            for (int left : conflicts[right]) {
+// 6. Updating maxLeft and secondMax.
+                
+/* We check that the current value of left (the left boundary 
+of the conflict) is greater than the current value of 
+maxLeft (the leftmost boundary of the conflict).
+    If this is the case, it means that we have found 
+the new leftmost border of the conflict, which is to the 
+right than the previous one. */
+
+                if (left > maxLeft) {
+/*
+If we have found the new leftmost border of the conflict, 
+then the previous leftmost border of the conflict becomes 
+the second leftmost border of the conflict.*/
+                    secondMax = maxLeft;
+                    maxLeft = left;
+                } else if (left > secondMax) {
+                    secondMax = left;
+                }
+            }
+            
+            // 7. We count the number of rows that end on the right.
+// This is how to count the number of people who can stand in a row before the right,
+            // without hitting anyone from the "conflict list".
+            totalValid += right - maxLeft;
+/*
+totalValid: This is a variable in which we accumulate the total 
+number of allowed “tables" (rows).
+    right: This is the current right boundary to which we are building 
+the “table”.
+    maxLeft: This is the leftmost border, before which the 
+“table” ending in the right cannot be started (due to conflicts).
+    right - maxLeft: This is the number of possible “tables” 
+that end in right and do not contain conflicts. 
+We subtract maxLeft from right to take into account only those 
+positions from which we can start the “table" without conflicts.
+
+Example:
+
+    right = 5
+    maxLeft = 2
+    right - maxLeft = 5 - 2 = 3
+
+This means that we have 3 possible “tables” that end at position 5.:
+
+    [3, 4, 5]
+    [4, 5]
+    [5]
+*/
+            
+            // 8. If there is a "main bully", we calculate how many contracts we will get,
+            // if we reconcile him with right. 🤝
+            if (maxLeft > 0) {
+                gain[maxLeft] += maxLeft - secondMax;
+            }
+        }
+        
+        // 9. We find the maximum "profit" that we will get by reconciling a couple. 💰
+        long maxGain = 0;
+        for (long g : gain) {
+            if (g > maxGain) {
+                maxGain = g;
+            }
+        }
+        
+        // 10. We return the total number of contracts + the maximum "profit". 🎉
+        return totalValid + maxGain;
+    }
+}
